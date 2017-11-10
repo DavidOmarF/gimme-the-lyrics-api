@@ -10,7 +10,7 @@ app.get('/:artist&:song', function (req, res){
 })
 
 // listen for requests :)
-port = 27017
+port = 3000
 var listener = app.listen(port, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
