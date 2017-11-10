@@ -1,10 +1,14 @@
 let cheerio = require('cheerio');
 let request = require('request');
 
+function cleanString(s){
+    return s.replace(/\s+/g, '-').toLowerCase();
+}
+
 function makeSourceFor(artist, song){
     let domain = "https://genius.com/";
-    artist = artist.replace(/\s+/g, '-').toLowerCase();
-    song = song.replace(/\s+/g, '-').toLowerCase();
+    artist = cleanString(artist)
+    song = cleanString(song)
     return domain + artist + "-" + song + "-lyrics"
 }
 

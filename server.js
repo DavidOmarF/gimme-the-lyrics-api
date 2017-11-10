@@ -4,8 +4,9 @@ var app = express();
 var crawlLyrics = require('./crawlLyrics')
 
 app.get('/:artist&:song', function (req, res){
+  res.setHeader('Content-Type', 'application/json');
   crawlLyrics(req.params.artist, req.params.song, function(data){
-    res.end(JSON.stringify(data));
+    res.json(data);
   });
 })
 
