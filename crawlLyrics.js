@@ -1,29 +1,32 @@
 let cheerio = require('cheerio');
 let request = require('request');
 
-function cleanString(s){
+function cleanString(s) {
+    // s = s.trim()
     return s.replace(/\s+/g, '-').toLowerCase();
 }
 
-function makeSourceFor(artist, song){
+function makeSourceFor(artist, song) {
     let domain = "https://genius.com/";
     artist = cleanString(artist)
     song = cleanString(song)
     return domain + artist + "-" + song + "-lyrics"
 }
 
-function crawlLyrics(artist, song, callback){
+function crawlLyrics(artist, song, callback) {
+    artist = artist.trim()
+    song = song.trim()
     let source = makeSourceFor(artist, song);
-    request(source, function(err, res, body) {
+    request(source, function (err, res, body) {
         if (err) throw err;
-        
+
         let $ = cheerio.load(body);
         let lyrics = ""
-        $(".lyrics").each(function(index){
+        $(".lyrics").each(function (index) {
             lyrics = $(this).find('p').text().trim()
         })
         // console.log('scrapped', lyrics);
-        callback({artist, song, lyrics})
+        callback({ artist, song, lyrics })
     })
 }
 
