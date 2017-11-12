@@ -1,5 +1,6 @@
 let cheerio = require('cheerio');
 let request = require('request');
+let getFirstResult = require('./getFirstResult');
 
 function toTitleCase(s) {
     return s
@@ -16,28 +17,20 @@ function cleanString(s) {
     return s.replace(/\s+/g, '-').toLowerCase();
 }
 
-function makeSourceFor(artist, song) {
-    let domain = "https://genius.com/";
-    artist = cleanString(artist)
-    song = cleanString(song)
-    return domain + artist + "-" + song + "-lyrics"
-}
+function crawlLyrics(term, callback) {
+    getFirstResult(term, function (source) {
+        request(source, function (err, res, body) {
+            if (err) throw err;
 
-function crawlLyrics(artist, song, callback) {
-    artist = toTitleCase(artist.trim())
-    song = toTitleCase(song.trim())
-    let source = makeSourceFor(artist, song);
-    request(source, function (err, res, body) {
-        if (err) throw err;
-
-        let $ = cheerio.load(body);
-        let lyrics = ""
-        $(".lyrics").each(function (index) {
-            lyrics = $(this).find('p').text().trim()
-        })
-        // console.log('scrapped', lyrics);
-        callback({ artist, song, lyrics })
-    })
+            let $ = cheerio.load(body);
+            let lyrics = ""
+            $(".lyrics").each(function (index) {
+                lyrics = $(this).find('p').text().trim()
+            })
+            // console.log('scrapped', lyrics);
+            callback(null, {lyrics})
+        });
+    });
 }
 
 module.exports = crawlLyrics;

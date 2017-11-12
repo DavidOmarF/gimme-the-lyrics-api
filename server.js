@@ -7,9 +7,10 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/views/index.html')
 })
 
-app.get('/:artist&:song', function (req, res){
+app.get('/:term', function (req, res){
   res.setHeader('Content-Type', 'application/json');
-  crawlLyrics(req.params.artist, req.params.song, function(data){
+  crawlLyrics(req.params.term, function(err, data){
+    if (err) throw err;
     res.json(data);
   });
 })
